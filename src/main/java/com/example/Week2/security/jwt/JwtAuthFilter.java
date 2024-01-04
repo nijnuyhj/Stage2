@@ -1,52 +1,29 @@
 package com.example.Week2.security.jwt;
-
-import io.jsonwebtoken.Claims;
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.filter.OncePerRequestFilter;
 
+import javax.servlet.*;
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
-@Slf4j
-@RequiredArgsConstructor
-public class JwtAuthFilter extends OncePerRequestFilter {
+public class JwtAuthFilter extends GenericFilter {
+
     private final JwtUtil jwtUtil;
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-            throws ServletException, IOException {
-            String uri = request.getRequestURI();
 
-            if(uri.contains("api/signup")|| uri.contains("api/login")){
-                filterChain.doFilter(request,response);
-                return;
+    public JwtAuthFilter(JwtUtil jwtUtil)  {
+        this.jwtUtil = jwtUtil;
+    }
+
+    @Override
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+        if (jwtUtil != null) { // jwtUtil이 null이 아닌지 확인
+            // 1. Request Header 에서 토큰을 꺼냄
+            String jwt = jwtUtil.resolveToken((HttpServletRequest) request);
+            if (jwt != null && jwtUtil.validateToken(jwt)) {   // token 검증
+                Authentication auth = jwtUtil.getAuthentication(jwt);    // 인증 객체 생성
+                SecurityContextHolder.getContext().setAuthentication(auth); // SecurityContextHolder에 인증 객체 저장
             }
-
-            String accessToken = jwtUtil.resolveToken(request, AUTHORIZATION_ACCESS);
-            String refreshToken = jwtUtil.resolveToken(request, AUTHORIZATION_REFRESH);
-
-            //인증 필요 없거나 refreshToken이 있을 경우 (토큰 재발행 요청) 다음 필터로 이동한다.
-            if(accessToken == null || refreshToken!=null){
-                filterChain.doFilter(request,response);
-                return;
-            }
-
-            jwtUtil.validateAccessToekn(request,response);
-            Claims info = jwtUtil.getUserInfoFromToken(token,false);
-            setAuthentication(info.getSubject());
-            filterChain.doFilter(request,response);
         }
-
-        //인증/인가 설정
-        private void setAuthentication(String username){
-        SecurityContext context = SecurityContextHolder.createEmptyContext();
-        Authentication authentication = jwtUtil.createAuthentication(username);
-        context.setAuthentication(authentication);
-        SecurityContextHolder.setContext(context);
+        chain.doFilter(request, response);
     }
 }

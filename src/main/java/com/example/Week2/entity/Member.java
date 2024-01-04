@@ -1,7 +1,9 @@
 package com.example.Week2.entity;
 
-import jakarta.persistence.*;
+import com.example.Week2.dto.request.LoginRequestDto;
 import lombok.*;
+
+import javax.persistence.*;
 
 @Entity
 @Getter
@@ -18,11 +20,14 @@ public class Member {
     @Column(nullable = false)
     private String password;
 
-    @Builder
     public Member(String username, String password){
         this.username = username;
         this.password = password;
     }
 
 
+    public Member(LoginRequestDto dto) {
+        this.password = dto.getPassword();
+        this.username = dto.getUsername();
+    }
 }
