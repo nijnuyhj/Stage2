@@ -5,6 +5,7 @@ import lombok.*;
 
 import javax.persistence.*;
 
+
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -30,4 +31,9 @@ public class Member {
         this.password = dto.getPassword();
         this.username = dto.getUsername();
     }
+
+    public String getUsername() {
+        return username;
+    }
+
 }

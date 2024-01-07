@@ -1,5 +1,6 @@
 package com.example.Week2.security;
 
+import com.example.Week2.repository.MemberRepository;
 import com.example.Week2.security.jwt.JwtAuthFilter;
 import com.example.Week2.security.jwt.JwtUtil;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +20,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class WebSecurityConfig  {
 
     private final JwtUtil jwtUtil;
+    private final MemberRepository memberRepository;
     @Bean
     public BCryptPasswordEncoder encodePassword() {
         return new BCryptPasswordEncoder();
@@ -46,7 +48,7 @@ public class WebSecurityConfig  {
 
         http
                 .authorizeRequests()
-                .antMatchers("/api/auth/memos/**").authenticated()
+                .antMatchers("/api/post/**").hasRole("USER")
                 .anyRequest().permitAll();
         return http.build();
     }

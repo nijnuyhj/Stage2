@@ -2,6 +2,7 @@ package com.example.Week2.security;
 
 import com.example.Week2.entity.Member;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
@@ -19,11 +20,17 @@ public class UserDetailsImpl implements UserDetails {
         return member;
     }
 
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities()
-    {
-        return Collections.emptyList();
-    }
+//    @Override
+//    public Collection<? extends GrantedAuthority> getAuthorities()
+//    {
+//        return Collections.emptyList();
+//    }
+@Override
+public Collection<? extends GrantedAuthority> getAuthorities() {
+    // 여기서 사용자의 권한을 부여해줍니다.
+    // 여기서는 간단하게 "ROLE_USER" 권한만을 부여하도록 하였습니다.
+    return Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"));
+}
 
     @Override
     public String getPassword() {
