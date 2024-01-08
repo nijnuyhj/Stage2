@@ -4,6 +4,8 @@ import com.example.Week2.dto.request.LoginRequestDto;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Entity
@@ -13,6 +15,7 @@ import javax.persistence.*;
 public class Member {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name ="member_id")
     private Long id;
 
     @Column(nullable = false)
@@ -20,6 +23,9 @@ public class Member {
 
     @Column(nullable = false)
     private String password;
+
+    @OneToMany(mappedBy = "member")
+    private List<Post> post = new ArrayList<>();
 
     public Member(String username, String password){
         this.username = username;

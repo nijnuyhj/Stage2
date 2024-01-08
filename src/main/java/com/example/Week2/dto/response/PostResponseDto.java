@@ -12,7 +12,7 @@ public class PostResponseDto {
     private String title;
     private String content;
 
-    public PostResponseDto(Long id, String title, String content) {
+    public PostResponseDto(Long id, String title, String content, String username) {
         this.id = id;
         this.title = title;
         this.content = content;

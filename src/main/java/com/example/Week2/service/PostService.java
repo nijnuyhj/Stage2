@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -20,16 +21,54 @@ import java.util.List;
 public class PostService {
     private final PostRepository postRepository;
     private final MemberRepository memberRepository;
+
     @Transactional
     public PostResponseDto createPost(PostRequestDto postRequestDto, Member member){
-        Post post = postRequestDto.toEntity(member);
+        Post post = new Post(postRequestDto,member);
         postRepository.save(post);
         return new PostResponseDto(post);
     }
 
     @Transactional
-    public List<Post> getPost(){
-        return postRepository.findAllByOrderByCreatedAtDesc();
+    public List<PostResponseDto> getAllPost(){
+        List<Post> posts = postRepository.findAllByOrderByCreatedAtDesc();
+        List<PostResponseDto> postResponseDto = new ArrayList<>();
+
+        for (Post post : posts) {
+            postResponseDto.add(new PostResponseDto(post));
+        }
+        return postResponseDto;
     }
 
+    @Transactional    // 글 상세보기
+    public PostResponseDto getPost(Member member,Long postId) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow( () -> new IllegalArgumentException("해당 글이 존재하지 않습니다"));
+        return new PostResponseDto(post);
+    }
+
+    @Transactional //변경감지
+    public PostResponseDto changePost(Long postId, PostRequestDto requestDto, Member member) {
+            Post post = postRepository.findById(postId).orElseThrow(
+                ()-> new IllegalArgumentException("해당 글이 존재하지 않습니다")
+        );
+            Member existUser = checkMember(member);
+            checkSameMember(existUser,post.getMember());
+                System.out.println(member.getId());
+                System.out.println(post.getId());
+                post.update(requestDto);
+                return new PostResponseDto(post);
+    }
+
+    private Member checkMember(Member member) {
+        return memberRepository.findByUsername(member.getUsername()).
+                orElseThrow(() -> new IllegalArgumentException("권한이 없습니다"));
+
+    }
+
+    public void checkSameMember(Member existMember, Member member) {
+        if (!existMember.getUsername().equals(member.getUsername())) {
+            throw new IllegalArgumentException("권한이 없습니다.");
+        }
+    }
 }
