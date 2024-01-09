@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -26,6 +28,9 @@ public class Post extends TimeStamped{
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
+
+    @OneToMany(mappedBy ="post",cascade = CascadeType.REMOVE)
+    private List<Comment> comment = new ArrayList<>();
 
 
     @Builder

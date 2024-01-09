@@ -70,7 +70,8 @@ public class PostService {
         Member existUser = checkMember(member);
         checkSameMember(existUser,post.getMember());
         postRepository.delete(post);
-        return null;
+        ResponseMessage responseMessage = new ResponseMessage("글이 성공적으로 삭제되었습니다.",null);
+        return ResponseEntity.ok(responseMessage);
     }
 
     private Member checkMember(Member member) {
