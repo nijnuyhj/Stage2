@@ -47,4 +47,8 @@ public class PostController {
         return new ResponseEntity<>(new ResponseMessage<>("게시글 수정",response),HttpStatus.OK);
     }
 
+    @DeleteMapping("/post/{postId}")
+    public ResponseEntity<ResponseMessage>deletePost(@PathVariable Long postId, @AuthenticationPrincipal UserDetailsImpl userDetails){
+        return postService.deletePost(postId,userDetails.getMember());
+    }
 }

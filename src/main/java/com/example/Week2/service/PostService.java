@@ -2,12 +2,14 @@ package com.example.Week2.service;
 
 import com.example.Week2.dto.request.PostRequestDto;
 import com.example.Week2.dto.response.PostResponseDto;
+import com.example.Week2.dto.response.ResponseMessage;
 import com.example.Week2.entity.Member;
 import com.example.Week2.entity.Post;
 import com.example.Week2.repository.MemberRepository;
 import com.example.Week2.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -60,6 +62,17 @@ public class PostService {
                 return new PostResponseDto(post);
     }
 
+    @Transactional
+    public ResponseEntity<ResponseMessage> deletePost(Long postId, Member member) {
+        Post post = postRepository.findById(postId).orElseThrow(
+                ()-> new IllegalArgumentException("해당 글이 존재하지 않습니다")
+        );
+        Member existUser = checkMember(member);
+        checkSameMember(existUser,post.getMember());
+        postRepository.delete(post);
+        return null;
+    }
+
     private Member checkMember(Member member) {
         return memberRepository.findByUsername(member.getUsername()).
                 orElseThrow(() -> new IllegalArgumentException("권한이 없습니다"));
@@ -71,4 +84,6 @@ public class PostService {
             throw new IllegalArgumentException("권한이 없습니다.");
         }
     }
+
+
 }
