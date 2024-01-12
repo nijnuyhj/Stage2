@@ -30,7 +30,7 @@ public class Post extends TimeStamped{
     private Member member;
 
     @OneToMany(mappedBy ="post",cascade = CascadeType.REMOVE)
-    private List<Comment> comment = new ArrayList<>();
+    private List<Comment> commentList = new ArrayList<>();
 
 
     @Builder

@@ -24,6 +24,10 @@ public class Member {
     @Column(nullable = false)
     private String password;
 
+//    @Column(nullable = false)
+//    @Enumerated(value = EnumType.STRING)
+//    private UserRoleEnum role;
+
     @OneToMany(mappedBy = "member")
     private List<Post> post = new ArrayList<>();
 
@@ -32,6 +36,7 @@ public class Member {
     public Member(String username, String password){
         this.username = username;
         this.password = password;
+//        this.role = role;
     }
 
 

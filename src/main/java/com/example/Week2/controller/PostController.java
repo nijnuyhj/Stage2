@@ -35,8 +35,8 @@ public class PostController {
     }
 
     @GetMapping("/post/{postId}")
-    public ResponseEntity<ResponseMessage<PostResponseDto>> getPost(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long postId) {
-        PostResponseDto response = postService.getPost(userDetails.getMember(), postId);
+    public ResponseEntity<ResponseMessage<PostResponseDto>> getPost(@PathVariable Long postId) {
+        PostResponseDto response = postService.getPost(postId);
         return new ResponseEntity<>(new ResponseMessage<>("게시글 상세조회", response), HttpStatus.OK);
     }
 
