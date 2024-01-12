@@ -26,8 +26,8 @@ public class CommentController {
         return commentService.updateComment(postId, commentRequestDto, userDetails.getMember());
     }
 
-//    @DeleteMapping("{postId}/comment")
-//    public CommentResponseDto deleteComment(@PathVariable Long postId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-//        return commentService.deleteComment(postId, userDetails.getMember());
-//    }
+    @DeleteMapping("{postId}/comment")
+    public CommentResponseDto deleteComment(@PathVariable Long postId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return commentService.deleteComment(postId, userDetails.getMember());
+    }
 }

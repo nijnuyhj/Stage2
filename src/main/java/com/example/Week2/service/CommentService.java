@@ -38,6 +38,12 @@ public class CommentService {
         return new CommentResponseDto(comment);
     }
 
+    @Transactional
+    public CommentResponseDto deleteComment(Long postId, Member member){
+        Comment comment = commentIdByUserValid(postId,member);
+        commentRepository.delete(comment);
+        return new CommentResponseDto(comment);
+    }
     public Post postIdValid(Long postId) {
         Post post = postRepository.findById(postId).orElseThrow(
                 () -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다.")
