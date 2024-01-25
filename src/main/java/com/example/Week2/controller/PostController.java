@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -30,9 +31,11 @@ public class PostController {
     }
 
     @GetMapping("/post")
-    public List<PostResponseDto> getAllPost() {
-        return postService.getAllPost();
+    public ResponseEntity<ResponseMessage<List<PostResponseDto>>> getAllPost() {
+        List<PostResponseDto> response = postService.getAllPost();
+        return ResponseEntity.ok(new ResponseMessage<>("전체 조회", response));
     }
+
 
     @GetMapping("/post/{postId}")
     public ResponseEntity<ResponseMessage<PostResponseDto>> getPost(@PathVariable Long postId) {
@@ -42,7 +45,6 @@ public class PostController {
 
     @PutMapping("/post/{postId}")
     public ResponseEntity<ResponseMessage<PostResponseDto>> changePost(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long postId,@RequestBody PostRequestDto requestDto){
-
         PostResponseDto response = postService.changePost(postId, requestDto, userDetails.getMember());
         return new ResponseEntity<>(new ResponseMessage<>("게시글 수정",response),HttpStatus.OK);
     }
@@ -51,4 +53,5 @@ public class PostController {
     public ResponseEntity<ResponseMessage>deletePost(@PathVariable Long postId, @AuthenticationPrincipal UserDetailsImpl userDetails){
         return postService.deletePost(postId,userDetails.getMember());
     }
+
 }

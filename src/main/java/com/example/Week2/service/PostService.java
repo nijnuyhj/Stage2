@@ -14,8 +14,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,7 +37,7 @@ public class PostService {
         return new PostResponseDto(post);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public List<PostResponseDto> getAllPost(){
         List<Post> posts = postRepository.findAllByOrderByCreatedAtDesc();
         List<PostResponseDto> postResponseDto = new ArrayList<>();

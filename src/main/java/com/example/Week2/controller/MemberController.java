@@ -9,10 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
@@ -33,6 +30,11 @@ public class MemberController {
     public ResponseEntity<ResponseMessage<MemberResponseDto>>login(@RequestBody LoginRequestDto loginRequestDto, HttpServletResponse response){
         MemberResponseDto memberResponse = memberService.login(loginRequestDto,response);
         return new ResponseEntity<>(new ResponseMessage<>("로그인 성공",memberResponse),HttpStatus.OK);
+    }
+
+    @GetMapping("/test")
+    public ResponseEntity<ResponseMessage<String>>testtest(){
+        return new ResponseEntity<>(new ResponseMessage<>("asdasdasdasd",null),HttpStatus.OK);
     }
 
 
